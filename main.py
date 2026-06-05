@@ -49,6 +49,10 @@ def delete_movies_older_than(year: int, db_path: str = "base.db") -> int:
     params = (year,)
     
     deleted_count = db.execute(query, params, commit=True)
+    
+    # Оптимизация базы данных после удаления
+    db.vacuum()
+    
     return deleted_count
 
 
@@ -362,11 +366,11 @@ def find_movies_by_title(search_word: str, db_path: str = "base.db") -> list:
     query = """
         SELECT rank, title, year, genre, imdb_rating, imdb_link
         FROM movies
-        WHERE title LIKE ?
+        WHERE UPPER(title) LIKE ?
         ORDER BY imdb_rating DESC
     """
     
-    params = (f'%{search_word}%',)
+    params = (f'%{search_word.upper()}%',)
     
     movies = db.fetch_all(query, params)
     return movies
@@ -460,7 +464,7 @@ def print_menu():
     print("4. Показать количество фильмов в базе")
     print("5. Топ-5 фильмов по рейтингу")
     print("6. Перезалить БД из CSV")
-    print("7. Поиск фильма по названию")
+    print("7. Поиск фильма по слову в названии")
     print("8. Топ-10 фильмов после 2015 года")
     print("0. Выход")
     print("-" * 45)

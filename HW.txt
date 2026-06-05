@@ -1,0 +1,37 @@
+----------------------------- Реализуйте команду «Топ-10 фильмов после 2015 года по рейтингу».
+-- Выполнена в виде SQL-запроса и добавлена в меню, пункт 8.
+
+SELECT rank, title, year, genre, imdb_rating, imdb_link
+FROM movies
+WHERE year > 2015
+ORDER BY imdb_rating DESC
+LIMIT 10;
+
+
+----------------------------- Сравните работу = и LIKE в запросах.
+-- = ищет строгие совпадения
+select *
+FROM movies m 
+where m.title = 'The Godfather'; 
+
+-- LIKE ищет по маске
+select *
+FROM movies m 
+where m.title like 'The Godfather%';
+
+----------------------------- Попробуйте удалить фильмы старше 2005 года и оптимизировать базу командой VACUUM.
+-- При использовании команды VACUUM после удаления записей объем БД уменьшается.
+-- Команда VACUUM добавлена в код проекта.
+
+DELETE FROM movies 
+WHERE year < 2005;
+
+VACUUM;
+
+----------------------------- Как реализован пункт меню «поиск по слову в названии» и какой запрос там используется?
+-- 7. Поиск фильма по слову в названии
+
+SELECT rank, title, year, genre, imdb_rating, imdb_link
+FROM movies
+WHERE UPPER(title) LIKE '%THE%'
+ORDER BY imdb_rating DESC
